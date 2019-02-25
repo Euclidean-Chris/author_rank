@@ -1,0 +1,53 @@
+{% extends 'simranking/base.html' %}
+
+{% block content %}
+    <div class="container">
+		<div class="form-group col-xs-12 ">
+			<input type="text" class="search form-control" id="author_search" autofocus placeholder="What you looking for?">
+		</div>
+		<hgroup class="mb20">
+			<h1>Search Results</h1>
+			<h2 class="lead" id="result"></h2>
+		</hgroup>
+
+
+		<section id="authorSearch">
+		</section>
+		<section id="authorSearch1"></section>
+
+	</div>
+{% endblock %}
+{% block javascript %}
+  <script>
+  var author_search = document.getElementById("authorSearch");
+  var author_result = document.getElementById("result");
+  <!--var _author-->
+    $("#author_search").change(function () {
+      var author = $(this).val();
+
+      $.ajax({
+        url: 'search-author/',
+        data: {
+          'author_name': author
+        },
+        dataType: 'json',
+        success: function (data) {
+
+          if (data.available_paper) {
+            $("#result").html("")
+			$("#authorSearch").html("");
+          	$("#result").append("<strong class='text-danger'>"+Object.keys(data.available_paper).length+"</strong> top authors were found for the search for <strong class='text-danger'>"+author+"</strong>");
+          	$.each(data, function(index, value) {
+			  $.each(value, function(ind, val) {
+				  $("#authorSearch").append("<section class='col-xs-12 col-sm-6 col-md-12'><article class='search-result row'><div class='col-xs-12 col-sm-12 col-md-2'><a href='#' title='"+ind+"' class='thumbnail'><img src='http://chittagongit.com//images/default-profile-icon/default-profile-icon-6.jpg' style='height: 100px' alt="+ind+"'/></a></div><div class='col-xs-12 col-sm-12 col-md-2'><h3 style='font-size:18px;margin-top:0'><a href='#' title='' id='_author'>"+ind+"</a></h3><h3 style='font-size:16px;margin-top:0'><a href='#' title='' id='_author'>"+val[0]['affiliation']+"</a></h3><ul class='meta-search' style='list-style:none;padding-left:0'><li><i class='glyphicon glyphicon-calendar'></i> <span>"+val[0]['count']+"</span></li><li><i class='glyphicon glyphicon-time'></i> <span>"+val[0]['h_index']+"</span></li><li><i class='glyphicon glyphicon-tags'></i> <span>"+val[0]['score']+"</span></li></ul></div><span class='clearfix borda'></span></article></section>");
+			  });
+			});
+          }
+        },
+        error: function(data){
+        	alert("Good Error");
+        }
+      });
+    });
+  </script>
+{% endblock %}

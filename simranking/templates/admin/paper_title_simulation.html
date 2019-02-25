@@ -1,0 +1,38 @@
+{% extends "admin/change_list.html" %}
+{% block content_title %}
+    <h1> Paper Title Simulation </h1>
+{% endblock %}
+{% block content %}
+<div class=”results”>
+    <table>
+
+    <thead>
+      <tr>
+        <th>
+          <div class=”text”>
+            <a href=”#”></a>
+          </div>
+        </th>
+        {% for paper in papers %}
+        <th>
+          <div class=”text”>
+            <a href=”#”>{{paper.title}}</a>
+          </div>
+        </th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for paper, row in paper_titles %}
+      <tr class=””>
+        <td> {{paper}} </td>
+        {% for cs in row %}
+            <td> {{cs}} </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+
+  </table>
+</div>
+{% endblock %}
