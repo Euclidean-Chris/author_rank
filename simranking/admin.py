@@ -83,6 +83,8 @@ class MaliciousAuthorAdmin(admin.ModelAdmin):
         c = 0.2 #std
         d = 5 #number of fields
         author_score = {}
+        print("getting something here")
+        print(self.calculateFieldScore())
         for author, fields in self.calculateFieldScore().items():
             mean = numpy.mean(self.flattenFieldScore(fields)).round(decimals=4)
             std = numpy.std(self.flattenFieldScore(fields)).round(decimals=4)
@@ -95,7 +97,7 @@ class MaliciousAuthorAdmin(admin.ModelAdmin):
             author_score.setdefault(author, []).append(
                 {'mean': numpy.mean(self.flattenFieldScore(fields)).round(decimals=4),
                  'std': numpy.std(self.flattenFieldScore(fields)).round(decimals=4),
-                 'remark': remarks})
+                 'remark': remarks, 'numberField': len(fields)})
         return author_score
 
     def changelist_view(self, request, extra_context=None):
@@ -174,7 +176,7 @@ class MaliciousAuthorListAdmin(admin.ModelAdmin):
             author_score.setdefault(author, []).append(
                 {'num':len(fields), 'mean': numpy.mean(self.flattenFieldScore(fields)).round(decimals=4),
                  'std': numpy.std(self.flattenFieldScore(fields)).round(decimals=4),
-                 'remark': remarks})
+                 'remark': remarks, 'numberField': len(fields)})
         return author_score
 
     def changelist_view(self, request, extra_context=None):

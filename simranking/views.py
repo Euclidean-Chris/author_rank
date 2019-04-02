@@ -14,6 +14,7 @@ from .decorators import template
 from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonResponse
 from django.template import RequestContext
 from django.urls import reverse
+from django.shortcuts import get_object_or_404
 import logging
 import pandas as pd
 import numpy as np
@@ -22,18 +23,17 @@ from collections import Counter
 
 from .models import Paper, Author, PaperAuthor
 
-import ssl
-try:
-    _create_unverified_https_context = ssl._create_unverified_context
-except AttributeError:
-    pass
-else:
-    ssl._create_default_https_context = _create_unverified_https_context
+# import ssl
+# try:
+#     _create_unverified_https_context = ssl._create_unverified_context
+# except AttributeError:
+#     pass
+# else:
+#     ssl._create_default_https_context = _create_unverified_https_context
+#
+# nltk.download('punkt')
+# nltk.download('stopword')
 
-nltk.download('punkt')
-nltk.download('stopwords')
-
-##regular expressions
 
 # Global variables
 WORD = re.compile(r'\w+')
@@ -108,7 +108,7 @@ def sort_score(author_scores):
     new_author_score = {}
     for k, v in sorted(author_scores.items(), reverse=True, key=lambda x: x[1][0]):
         author = get_author(k)
-        new_author_score.setdefault(k, []).append({'score': v[0], 'affiliation': author.affiliation,
+        new_author_score.setdefault(k, []).append({'score': v[0], 'a_id': author.a_id, 'affiliation': author.affiliation,
                                                    'count': publication_count(author.a_id),'h_index': author.h_index,
                                                    'keywords': author.keywords})
     return new_author_score
@@ -139,6 +139,22 @@ def search_author(request):
     # if data['available_paper']:
     #     data['error_message'] = 'Bad search query.'
     return JsonResponse(data)
+
+
+def get_publications(author):
+    publications = {}
+    paperAuthor = PaperAuthor.objects.filter(a_id=author)
+    for paper in paperAuthor:
+        papers = Paper.objects.filter(doi=paper.doi).first()
+        publications[paper.doi] = papers.title
+    return publications
+
+
+# @template('authorDetails.html')
+def get_single_author(request, author):
+    authord = get_object_or_404(Author, pk=author)
+    count = PaperAuthor.objects.filter(a_id=author).count()
+    return render(request, './simranking/authorDetails.html', context={'author': authord, 'count': count, 'publications': get_publications(author)})
 
 
 def upload_csv(request):

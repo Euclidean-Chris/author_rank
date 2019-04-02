@@ -13,11 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 
+from simranking import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('simranking/', include(('simranking.urls','simranking'), namespace="simranking")),
+    path('author-ranking/', include(('simranking.urls','author-ranking'), namespace="simranking")),
+    path('author-ranking/<author>/', views.get_single_author, name='author-detail'),
+    # url(r'^(?P<author-ranking>[0-9]+)$', views.get_single_author, name='author_detail')
 ]
 admin.site.site_header = 'Simrank'

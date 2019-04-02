@@ -73,6 +73,7 @@ function individualStats(author, stats){
                   {% for field in paper_field %}
                     <th>{{field}}</th>
                   {% endfor %}
+                    <th># of Field(s)</th>
                     <th>Mean</th>
                     <th>Standard Deviation</th>
                     <th>Remark</th>
@@ -98,6 +99,7 @@ function individualStats(author, stats){
                     {% for new_author, stats in author_score.items %}
                     {% if author == new_author %}
                     {% for value in stats %}
+                        <td>{{value.numberField}}</td>
                         <td>{{value.mean}}</td>
                         <td>{{value.std}}</td>
                         <td>{{value.remark}}</td>
