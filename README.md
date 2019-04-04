@@ -1,4 +1,5 @@
 # author_rank
+This is a system implementation for ranking of authors and detection of malicious author behaviours in a research community. The installation requirements are as follows:
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
